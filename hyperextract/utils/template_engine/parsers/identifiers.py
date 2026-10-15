@@ -154,17 +154,16 @@ def validate_identifiers_fields(
                     f"relation_members references '{{{field}}}' but "
                     f"relations.fields does not declare '{field}'"
                 )
-    for attr, section in (
-        ("time_field", "entities"),
-        ("location_field", "entities"),
+    for attr, field in (
+        ("time_field", identifiers.time_field),
+        ("location_field", identifiers.location_field),
     ):
-        value = getattr(identifiers, attr, None)
-        if value:
-            for field in _placeholders(value):
-                if field not in entity_fields:
+        if field:
+            for placeholder in _placeholders(field):
+                if placeholder not in relation_fields:
                     problems.append(
-                        f"{attr} references '{{{field}}}' but "
-                        f"entities.fields does not declare '{field}'"
+                        f"{attr} references '{{{placeholder}}}' but "
+                        f"relations.fields does not declare '{placeholder}'"
                     )
 
     if problems:
