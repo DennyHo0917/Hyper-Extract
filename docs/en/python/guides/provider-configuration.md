@@ -1,10 +1,6 @@
 # Provider Configuration Guide
 
-<<<<<<< HEAD
-Configure Hyper-Extract to work with OpenAI, Bailian (Alibaba Cloud), DeepSeek, OrcaRouter, Cheaper Inference, or local vLLM deployments.
-=======
-Configure Hyper-Extract to work with OpenAI, Bailian (Alibaba Cloud), DeepSeek, OrcaRouter, Atlas Cloud, or local vLLM deployments.
->>>>>>> pr-189-src
+Configure Hyper-Extract to work with OpenAI, Bailian (Alibaba Cloud), DeepSeek, OrcaRouter, Atlas Cloud, Cheaper Inference, or local vLLM deployments.
 
 ---
 
@@ -68,20 +64,6 @@ llm, emb = create_client("orcarouter")
 # Or override the model: create_client("orcarouter:openai/gpt-4o-mini", ...)
 ```
 
-<<<<<<< HEAD
-### Cheaper Inference
-
-```python
-from hyperextract import create_client
-
-# Cheaper Inference is an OpenAI-compatible gateway with one key for models
-# from several labs. It has no embeddings API, so pair it with another embedder.
-# Key: CHEAPER_INFERENCE_API_KEY.
-llm, emb = create_client(
-    llm="cheaperinference",  # default model: gpt-5.4-mini
-    embedder="openai:text-embedding-3-small",
-)
-=======
 ### Atlas Cloud
 
 ```python
@@ -97,7 +79,20 @@ llm, emb = create_client(
 )
 # Or override the model: create_client(llm="atlascloud:moonshotai/kimi-k3", ...)
 # Avoid glm-5.x here: it rejects the forced tool_choice that extraction uses.
->>>>>>> pr-189-src
+```
+
+### Cheaper Inference
+
+```python
+from hyperextract import create_client
+
+# Cheaper Inference is an OpenAI-compatible gateway with one key for models
+# from several labs. It has no embeddings API, so pair it with another embedder.
+# Key: CHEAPER_INFERENCE_API_KEY.
+llm, emb = create_client(
+    llm="cheaperinference",  # default model: gpt-5.4-mini
+    embedder="openai:text-embedding-3-small",
+)
 ```
 
 ### Local vLLM
@@ -140,11 +135,8 @@ print(f"Nodes: {len(graph.nodes)}, Edges: {len(graph.edges)}")
 | **Anthropic** | `he config llm -p anthropic -k sk-ant-xxx` + `he config embedder -p openai -k sk-xxx` |
 | **DeepSeek** | `he config llm -p deepseek -k sk-xxx` + `he config embedder -p openai -k sk-xxx` |
 | **OrcaRouter** | `he config init -p orcarouter -k sk-orca-xxx` |
-<<<<<<< HEAD
 | **Cheaper Inference** | `he config llm -p cheaperinference -m gpt-5.4-mini -k ci_live_xxx` + `he config embedder -p openai -k sk-xxx` |
-=======
 | **Atlas Cloud** | `he config llm -p atlascloud -k xxx` + `he config embedder -p openai -k sk-xxx` |
->>>>>>> pr-189-src
 | **vLLM** | `he config init` → select "local vLLM" |
 | **Mixed** (LLM=Bailian, Embedder=vLLM) | `he config llm -p bailian -k sk-xxx` + `he config embedder -p vllm -u http://localhost:8001/v1 -k dummy` |
 
