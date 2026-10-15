@@ -350,3 +350,33 @@ def test_quick_init_does_not_warn_when_preset_has_default_llm(tmp_path, monkeypa
 
     assert result.exit_code == 0, result.output
     assert "no default LLM" not in result.output
+def test_atlascloud_is_a_library_preset_with_its_own_key_env():
+    """The CLI reads Atlas Cloud from the library tables, not a copy."""
+    from hyperextract.cli import config as cli_config
+
+    assert "atlascloud" in cli_config.PROVIDER_PRESETS
+    assert cli_config.PROVIDER_API_KEY_ENV["atlascloud"] == ("ATLASCLOUD_API_KEY",)
+
+
+def test_get_llm_config_reads_atlascloud_env_key(tmp_path, monkeypatch):
+    """Empty toml api_key must resolve ATLASCLOUD_API_KEY, ahead of OPENAI_API_KEY."""
+    monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-openai-must-not-win")
+    monkeypatch.setenv("ATLASCLOUD_API_KEY", "apikey-atlas-from-env")
+
+    cm = ConfigManager(tmp_path / "config.toml")
+    cm.set_llm(provider="atlascloud", model="deepseek-ai/deepseek-v4-flash", api_key="")
+    cfg = cm.get_llm_config()
+
+    assert cfg.api_key == "apikey-atlas-from-env"
+    assert cfg.base_url == "https://api.atlascloud.ai/v1"
+
+
+def test_interactive_init_lists_atlascloud():
+    """he config init provider list includes Atlas Cloud."""
+    import inspect
+
+    from hyperextract.cli.commands.config import init
+
+    assert '"atlascloud"' in inspect.getsource(init)
+
