@@ -145,7 +145,6 @@ def validate_identifiers_fields(
                     f"relation_members['{role}'] references '{{{field}}}' but "
                     f"relations.fields does not declare '{field}'"
                 )
-<<<<<<< HEAD
     else:
         # Hypergraph member fields: a single field name or a list of them.
         member_fields = [members] if isinstance(members, str) else (members or [])
@@ -155,6 +154,8 @@ def validate_identifiers_fields(
                     f"relation_members references '{{{field}}}' but "
                     f"relations.fields does not declare '{field}'"
                 )
+
+    # time/location live on relations (see validator HE-T006 and the presets).
     for attr, field in (
         ("time_field", identifiers.time_field),
         ("location_field", identifiers.location_field),
@@ -165,17 +166,6 @@ def validate_identifiers_fields(
                     problems.append(
                         f"{attr} references '{{{placeholder}}}' but "
                         f"relations.fields does not declare '{placeholder}'"
-=======
-    # time/location live on relations (see validator HE-T006 and the presets).
-    for attr in ("time_field", "location_field"):
-        value = getattr(identifiers, attr, None)
-        if value:
-            for field in _placeholders(value):
-                if field not in relation_fields:
-                    problems.append(
-                        f"{attr} references '{{{field}}}' but "
-                        f"relations.fields does not declare '{field}'"
->>>>>>> origin/main
                     )
 
     if problems:
